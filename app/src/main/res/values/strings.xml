@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SimpleToDoList</string>
+
+    <string-array name="toolBarSpinner">
+        <item>All Lists</item>
+    </string-array>
+    >
+</resources>
