@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">SimpleToDoList</string>
-    <string name="new_task">New Task</string>
-
-    <string-array name="toolBarSpinner">
-        <item>All Lists</item>
-    </string-array>
-    >
+    <string name="new_task"><font color="#ffffff">New Task</font></string>
+    <string name="all_list">All Lists</string>
+    <string name="add_new_task">Add new task</string>
+    <string name="voice_add_task">Voice add tasks</string>
+    <string name="what_is_to_be_done"><font color="#1e90ff">What is to be done?</font></string>
+    <string name="due_date"><font color="#1e90ff">Due date</font></string>
+    <string name="repeat"><font color="#1e90ff">Repeat</font></string>
+    <string name="task_hint"><font color="#b7cade">Write down the task here ...</font></string>
 </resources>

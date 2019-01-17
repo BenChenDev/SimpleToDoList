@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar topToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(topToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         addTaskButton = findViewById(R.id.addTaskButton);
         addTaskButton.setOnClickListener(new View.OnClickListener() {
@@ -26,12 +27,6 @@ public class MainActivity extends AppCompatActivity {
                 openMain2Activity();
             }
         });
-
-        Spinner spinner = findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.toolBarSpinner, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
     }
 
     public void openMain2Activity(){
