@@ -8,9 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,10 +20,11 @@ import java.util.Date;
 
 public class Main2Activity extends AppCompatActivity {
 
+    EditText task;
     TextView dEt, tEt;
     DatePickerDialog dPd;
     TimePickerDialog tPd;
-    ImageButton clean1, clean2;
+    ImageButton clean1, clean2, saveButton;
 
     private int year, month, day, hour, minute;
     private boolean is24HourView;
@@ -47,6 +50,7 @@ public class Main2Activity extends AppCompatActivity {
 
         clean1 = findViewById(R.id.blueClean1);
         clean2 = findViewById(R.id.blueClean2);
+        saveButton = findViewById(R.id.checkMark);
 
         Calendar c = Calendar.getInstance();
         if(dEt.getText().toString().equals("")){
@@ -132,6 +136,23 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tEt.setText("");
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                task = findViewById(R.id.inputTask);
+                //check fields
+                if(task.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Please write down your task.",Toast.LENGTH_LONG).show();
+                }else if(dEt.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Please set a date for the due day.",Toast.LENGTH_LONG).show();
+                }else if(tEt.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Please set a time for the due day.",Toast.LENGTH_LONG).show();
+                } else {
+
+                }
             }
         });
     }

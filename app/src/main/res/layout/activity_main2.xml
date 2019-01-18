@@ -62,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.059"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/inputTask" />
 
     <TextView
         android:id="@+id/textView3"
@@ -81,7 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/timeTextView" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/inputTask"
         android:layout_width="253dp"
         android:layout_height="64dp"
         android:layout_marginStart="8dp"
@@ -160,7 +160,7 @@
         android:background="#0000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:layout_constraintStart_toEndOf="@+id/inputTask"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@mipmap/blue_mic_foreground" />
 
