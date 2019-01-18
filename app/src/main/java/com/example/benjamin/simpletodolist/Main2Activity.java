@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -19,6 +21,7 @@ public class Main2Activity extends AppCompatActivity {
     TextView dEt, tEt;
     DatePickerDialog dPd;
     TimePickerDialog tPd;
+    ImageButton clean1, clean2;
 
     private int year, month, day, hour, minute;
     private boolean is24HourView;
@@ -42,11 +45,15 @@ public class Main2Activity extends AppCompatActivity {
         dEt = findViewById(R.id.dateTextView);
         tEt = findViewById(R.id.timeTextView);
 
+        clean1 = findViewById(R.id.blueClean1);
+        clean2 = findViewById(R.id.blueClean2);
+
         Calendar c = Calendar.getInstance();
         if(dEt.getText().toString().equals("")){
             year = c.get(Calendar.YEAR);
             day = c.get(Calendar.DAY_OF_MONTH);
             month = c.get(Calendar.MONTH);
+
             SimpleDateFormat sDf = new SimpleDateFormat("EEE");
             Date date = new Date(year, month, day-1);
             String dayOfWeek = sDf.format(date);
@@ -111,6 +118,20 @@ public class Main2Activity extends AppCompatActivity {
                     }
                 }, hour, minute, is24HourView);
                 tPd.show();
+            }
+        });
+
+        clean1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dEt.setText("");
+            }
+        });
+
+        clean2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tEt.setText("");
             }
         });
     }
