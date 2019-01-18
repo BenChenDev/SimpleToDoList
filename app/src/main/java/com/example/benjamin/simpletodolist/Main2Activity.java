@@ -1,12 +1,14 @@
 package com.example.benjamin.simpletodolist;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,8 +18,10 @@ public class Main2Activity extends AppCompatActivity {
 
     TextView dEt, tEt;
     DatePickerDialog dPd;
+    TimePickerDialog tPd;
 
-    private int year, month, day, weekDay;
+    private int year, month, day, hour, minute;
+    private boolean is24HourView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +46,24 @@ public class Main2Activity extends AppCompatActivity {
         if(dEt.getText().toString().equals("")){
             year = c.get(Calendar.YEAR);
             day = c.get(Calendar.DAY_OF_MONTH);
-            weekDay = c.get(Calendar.DAY_OF_WEEK);
             month = c.get(Calendar.MONTH);
             SimpleDateFormat sDf = new SimpleDateFormat("EEE");
             Date date = new Date(year, month, day-1);
             String dayOfWeek = sDf.format(date);
             dEt.setText(dayOfWeek + ", " + getMonthInString(month) + " " + day + ", " + year);
+        }
+
+        if(tEt.getText().toString().equals("")){
+            String apm;
+            hour = c.get(Calendar.HOUR_OF_DAY);
+            minute = c.get(Calendar.MINUTE);
+
+            if(c.get(Calendar.AM_PM) == Calendar.AM){
+                apm = "am";
+            } else {
+                apm = "pm";
+            }
+            tEt.setText(hour + ": " + minute + " " + apm);
         }
 
         dEt.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +83,34 @@ public class Main2Activity extends AppCompatActivity {
                     }
                 }, year, month, day);
                 dPd.show();
+            }
+        });
+
+        tEt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tPd = new TimePickerDialog(Main2Activity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int mHour, int mMinute) {
+                        String apm;
+                        Calendar time = Calendar.getInstance();
+                        time.set(Calendar.HOUR_OF_DAY, mHour);
+                        time.set(Calendar.MINUTE, mMinute);
+                        hour = mHour;
+                        minute = mMinute;
+                        is24HourView = false;
+                        if(time.get(Calendar.AM_PM) == Calendar.AM){
+                            apm = "am";
+                        } else {
+                            apm = "pm";
+                        }
+                        if(mHour > 12){
+                            mHour = mHour - 12;
+                        }
+                        tEt.setText(mHour + ": " + mMinute + " " + apm);
+                    }
+                }, hour, minute, is24HourView);
+                tPd.show();
             }
         });
     }
@@ -117,34 +161,4 @@ public class Main2Activity extends AppCompatActivity {
         return mMonth;
     }
 
-    private String getWeekDay (int weekDay){
-        String mWeekDay;
-        switch (weekDay){
-            case 0:
-                mWeekDay = "Sat";
-                break;
-            case 1:
-                mWeekDay = "Sun";
-                break;
-            case 2:
-                mWeekDay = "Mon";
-                break;
-            case 3:
-                mWeekDay = "Tue";
-                break;
-            case 4:
-                mWeekDay = "Web";
-                break;
-            case 5:
-                mWeekDay = "Thu";
-                break;
-            case 6:
-                mWeekDay = "Fri";
-                break;
-            default:
-                mWeekDay = "";
-                break;
-        }
-        return mWeekDay;
-    }
 }

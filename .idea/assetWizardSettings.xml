@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="54" />
+                                                <entry key="scalingPercent" value="96" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -36,8 +36,8 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="f9f9f9" />
-                                      <entry key="foregroundImage" value="C:\Users\Benjamin\Desktop\icons8-microphone-24.png" />
-                                      <entry key="outputName" value="blue_mic" />
+                                      <entry key="foregroundImage" value="C:\Users\Benjamin\Desktop\icons8-microphone-96.png" />
+                                      <entry key="outputName" value="blue_mice_icon" />
                                     </map>
                                   </option>
                                 </PersistentState>
