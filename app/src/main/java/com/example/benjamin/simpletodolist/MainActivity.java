@@ -5,12 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private ImageButton addTaskButton;
+    private TextView addNewTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,8 +20,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(topToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        addTaskButton = findViewById(R.id.addTaskButton);
+        addTaskButton = findViewById(R.id.blueAddButton);
         addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openMain2Activity();
+            }
+        });
+
+        addNewTask = findViewById(R.id.addNewTask);
+        addNewTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openMain2Activity();
