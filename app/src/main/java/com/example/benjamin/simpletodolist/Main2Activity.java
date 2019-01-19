@@ -1,12 +1,13 @@
 package com.example.benjamin.simpletodolist;
 
 import android.app.DatePickerDialog;
+import android.database.Cursor;
 import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -26,6 +27,8 @@ public class Main2Activity extends AppCompatActivity {
     TimePickerDialog tPd;
     ImageButton clean1, clean2, saveButton;
 
+    DBAdapter myDb;
+
     private int year, month, day, hour, minute;
     private boolean is24HourView;
 
@@ -33,6 +36,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        openDB();
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -143,18 +147,93 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 task = findViewById(R.id.inputTask);
+
+                String mTask = task.getText().toString();
+                String mDueDay = dEt.getText().toString();
+                String mDueTime = tEt.getText().toString();
+
                 //check fields
-                if(task.getText().toString().isEmpty()){
+                if(mTask.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Please write down your task.",Toast.LENGTH_LONG).show();
-                }else if(dEt.getText().toString().isEmpty()){
+                }else if(mDueDay.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Please set a date for the due day.",Toast.LENGTH_LONG).show();
-                }else if(tEt.getText().toString().isEmpty()){
+                }else if(mDueTime.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Please set a time for the due day.",Toast.LENGTH_LONG).show();
                 } else {
-
+                    String formattedDate, mYear = String.valueOf(year), mMonth = String.valueOf(month), mDay = String.valueOf(day), mHour = String.valueOf(hour),
+                            mMinute = String.valueOf(minute), mRepeat = "tast";
+                    if(month < 10){
+                        mMonth = "0" + String.valueOf(month);
+                    }
+                    if(day < 10){
+                        mDay = "0" + String.valueOf(day);
+                    }
+                    if(hour < 10){
+                        mHour = "0" + String.valueOf(hour);
+                    }
+                    if(minute < 10){
+                        mMinute = "0" + String.valueOf(minute);
+                    }
+                    formattedDate = mYear + "-" + mMonth + "-" + mDay + " " + mHour + ":" + mMinute;
+                    Long id  = myDb.insertRow(mTask, formattedDate, mRepeat);
+                    Toast.makeText(getApplicationContext(), "Command Sent! .. ID = " + id, Toast.LENGTH_LONG).show();
+                    Log.d("record created. ID= ", id.toString());
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        closeDB();
+    }
+
+    private void openDB() {
+        myDb = new DBAdapter(this);
+        myDb.open();
+    }
+
+    private void closeDB() {
+        myDb.close();
+    }
+
+    // Display an entire recordset to the screen.
+    private void displayRecordSet(Cursor cursor) {
+        String message = "";
+        // populate the message from the cursor
+
+        // Reset cursor to start, checking to see if there's data:
+        if (cursor.moveToFirst()) {
+            do {
+                // Process the data:
+                int id = cursor.getInt(DBAdapter.COL_ROWID);
+                String task = cursor.getString(DBAdapter.COL_TASK);
+                String dueDate = cursor.getString(DBAdapter.COL_DUEDAY);
+                String repeat = cursor.getString(DBAdapter.COL_REPEAT);
+
+                // Append data to the message:
+                message += "id=" + id
+                        +", task =" + task
+                        +", due date =" + dueDate
+                        +", repeat =" + repeat
+                        +"\n";
+
+                // [TO_DO_B6]
+                // Create arraylist(s)? and use it(them) in the list view
+            } while(cursor.moveToNext());
+        }
+
+        // Close the cursor to avoid a resource leak.
+        cursor.close();
+
+
+        // [TO_DO_B7]
+        // Update the list view
+
+        // [TO_DO_B8]
+        // Display a Toast message
+        Log.d("Test", message);
     }
 
     private String getMonthInString(int month){
