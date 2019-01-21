@@ -12,10 +12,10 @@ import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
-    private List<task> tasks;
+    private List<Task> tasks;
     private Context context;
 
-    public MyAdapter(List<task> tasks, Context context) {
+    public MyAdapter(List<Task> tasks, Context context) {
         this.tasks = tasks;
         this.context = context;
     }
@@ -30,7 +30,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        task single_task = tasks.get(position);
+        Task single_task = tasks.get(position);
         holder.task.setText(single_task.getTask());
         holder.dueDay.setText(single_task.getDueDay());
     }
