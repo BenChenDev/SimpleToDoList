@@ -1,12 +1,11 @@
 package com.example.benjamin.simpletodolist;
 
 public class Task {
-    private String task, dueDay, repeat;
+    private String task, dueDay;
 
-    public Task(String task, String dueDay, String repeat) {
+    public Task(String task, String dueDay) {
         this.task = task;
         this.dueDay = dueDay;
-        this.repeat = repeat;
     }
 
     public String getTask() {
@@ -15,9 +14,5 @@ public class Task {
 
     public String getDueDay() {
         return dueDay;
-    }
-
-    public String getRepeat() {
-        return repeat;
     }
 }

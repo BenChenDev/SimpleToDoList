@@ -15,15 +15,15 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/singleTask"
+                android:id="@+id/textViewTask"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="Task"/>
+                />
             <TextView
-                android:id="@+id/dueDay"
+                android:id="@+id/textViewDueDay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="due day"/>
+                />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

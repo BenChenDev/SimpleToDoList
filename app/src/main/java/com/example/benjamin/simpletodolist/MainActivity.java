@@ -33,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
         openDB();
         if(countTask() > 0){
             setContentView(R.layout.main_activity_layout_2);
+
+            //recyclerview
+            recyclerView = findViewById(R.id.recyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
             Cursor cursor = myDb.getAllRows();
             displayRecordSet(cursor);
         } else {
@@ -57,15 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 openMain2Activity();
             }
         });
-
-
-
-        //recyclerview
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
     }
 
     public void openMain2Activity(){
@@ -100,8 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Task task = new Task(
                         "task is " + t,
-                        "due day is " + dueDay,
-                        "repeat" + repeat
+                        "due day is " + dueDay
                 );
 
                 tasks.add(task);

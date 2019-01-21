@@ -31,8 +31,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Task single_task = tasks.get(position);
-        holder.task.setText(single_task.getTask());
-        holder.dueDay.setText(single_task.getDueDay());
+        holder.textViewTask.setText(single_task.getTask());
+        holder.textViewDueDay.setText(single_task.getDueDay());
     }
 
     @Override
@@ -41,13 +41,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView task, dueDay;
+        public TextView textViewTask, textViewDueDay;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            task = (TextView) itemView.findViewById(R.id.singleTask);
-            dueDay = (TextView) itemView.findViewById(R.id.dueDay);
+            textViewTask = itemView.findViewById(R.id.textViewTask);
+            textViewDueDay = itemView.findViewById(R.id.textViewDueDay);
         }
     }
 }
