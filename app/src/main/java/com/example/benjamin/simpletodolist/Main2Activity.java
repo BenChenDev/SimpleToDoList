@@ -70,16 +70,28 @@ public class Main2Activity extends AppCompatActivity {
         }
 
         if(tEt.getText().toString().equals("")){
-            String apm;
+            String apm, mMinute;
             hour = c.get(Calendar.HOUR_OF_DAY);
             minute = c.get(Calendar.MINUTE);
+
+            if(minute < 10){
+                mMinute = "0" + minute;
+            } else {
+                mMinute = String.valueOf(minute);
+            }
 
             if(c.get(Calendar.AM_PM) == Calendar.AM){
                 apm = "am";
             } else {
                 apm = "pm";
             }
-            tEt.setText(hour + ": " + minute + " " + apm);
+
+            if(hour > 12){
+                tEt.setText((hour-12) + ": " + mMinute + " " + apm);
+            } else {
+                tEt.setText(hour + ": " + mMinute + " " + apm);
+            }
+
         }
 
         dEt.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +120,7 @@ public class Main2Activity extends AppCompatActivity {
                 tPd = new TimePickerDialog(Main2Activity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int mHour, int mMinute) {
-                        String apm;
+                        String apm, mM;
                         Calendar time = Calendar.getInstance();
                         time.set(Calendar.HOUR_OF_DAY, mHour);
                         time.set(Calendar.MINUTE, mMinute);
@@ -123,7 +135,12 @@ public class Main2Activity extends AppCompatActivity {
                         if(mHour > 12){
                             mHour = mHour - 12;
                         }
-                        tEt.setText(mHour + ": " + mMinute + " " + apm);
+                        if(mMinute < 10){
+                            mM = "0" + String.valueOf(mMinute);
+                        } else {
+                            mM = String.valueOf(mMinute);
+                        }
+                        tEt.setText(mHour + ": " + mM + " " + apm);
                     }
                 }, hour, minute, is24HourView);
                 tPd.show();
@@ -180,7 +197,7 @@ public class Main2Activity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Command Sent! .. ID = " + id, Toast.LENGTH_LONG).show();
                     Log.d("record created. ID= ", id.toString());
                     finish();
-                    Intent openMainActivity= new Intent(this, MainActivity.class);
+                    Intent openMainActivity= new Intent(Main2Activity.this, MainActivity.class);
                     startActivity(openMainActivity);
                 }
             }

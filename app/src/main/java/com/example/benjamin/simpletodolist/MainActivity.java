@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 String repeat = cursor.getString(DBAdapter.COL_REPEAT);
 
                 Task task = new Task(
-                        "task is " + t,
-                        "due day is " + dueDay
+                        t,
+                        "Due in: " + dueDay
                 );
 
                 tasks.add(task);
