@@ -1,6 +1,7 @@
 package com.example.benjamin.simpletodolist;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -160,10 +161,10 @@ public class Main2Activity extends AppCompatActivity {
                 }else if(mDueTime.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Please set a time for the due day.",Toast.LENGTH_LONG).show();
                 } else {
-                    String formattedDate, mYear = String.valueOf(year), mMonth = String.valueOf(month), mDay = String.valueOf(day), mHour = String.valueOf(hour),
+                    String formattedDate, mYear = String.valueOf(year), mMonth = String.valueOf(month+1), mDay = String.valueOf(day), mHour = String.valueOf(hour),
                             mMinute = String.valueOf(minute), mRepeat = "tast";
-                    if(month < 10){
-                        mMonth = "0" + String.valueOf(month);
+                    if((month+1) < 10){
+                        mMonth = "0" + String.valueOf(month+1);
                     }
                     if(day < 10){
                         mDay = "0" + String.valueOf(day);
@@ -178,6 +179,9 @@ public class Main2Activity extends AppCompatActivity {
                     Long id  = myDb.insertRow(mTask, formattedDate, mRepeat);
                     Toast.makeText(getApplicationContext(), "Command Sent! .. ID = " + id, Toast.LENGTH_LONG).show();
                     Log.d("record created. ID= ", id.toString());
+                    finish();
+                    Intent openMainActivity= new Intent(this, MainActivity.class);
+                    startActivity(openMainActivity);
                 }
             }
         });
