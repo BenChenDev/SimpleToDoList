@@ -18,6 +18,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.speech.RecognizerIntent;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -203,6 +206,13 @@ public class Main2Activity extends AppCompatActivity {
                     }
                     formattedDate = mYear + "-" + mMonth + "-" + mDay + " " + mHour + ":" + mMinute;
                     Long id  = myDb.insertRow(mTask, formattedDate, mRepeat);
+
+                    //firebase write to DB
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference();
+
+                    myRef.setValue("added task");
+
                     Toast.makeText(getApplicationContext(), "Command Sent! .. ID = " + id, Toast.LENGTH_LONG).show();
                     Log.d("record created. ID= ", id.toString());
                     finish();
