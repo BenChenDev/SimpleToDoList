@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MyAdapter.ItemOnClickListener{
     ImageButton addTaskButton;
     TextView addNewTask;
 
@@ -121,5 +121,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Display a Toast message
         //Log.d("Test", message);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        //TODO:intent code
     }
 }
