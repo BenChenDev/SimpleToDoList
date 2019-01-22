@@ -1,6 +1,7 @@
 package com.example.benjamin.simpletodolist;
 
 import android.app.DatePickerDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.app.TimePickerDialog;
@@ -15,10 +16,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.speech.RecognizerIntent;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -29,6 +33,11 @@ public class Main2Activity extends AppCompatActivity {
     ImageButton clean1, clean2, saveButton;
 
     DBAdapter myDb;
+
+    ArrayList<String> arrl;
+
+    public static int TTS_DATA_CHECK = 1;
+    public static int VOICE_RECOGNITION = 2;
 
     private int year, month, day, hour, minute;
     private boolean is24HourView;
@@ -303,4 +312,17 @@ public class Main2Activity extends AppCompatActivity {
         return mMonth;
     }
 
+    public void speechInput(){
+        arrl.clear();
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please speak normally into your phone");
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
+        try{
+            startActivityForResult(intent, VOICE_RECOGNITION);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
