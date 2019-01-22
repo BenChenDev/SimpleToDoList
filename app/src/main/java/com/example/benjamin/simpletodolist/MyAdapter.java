@@ -38,7 +38,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         holder.textViewTask.setText(single_task.getTask());
         holder.textViewDueDay.setText(single_task.getDueDay());
 
-        holder.textViewTask.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, "clicked" + position, Toast.LENGTH_SHORT).show();
