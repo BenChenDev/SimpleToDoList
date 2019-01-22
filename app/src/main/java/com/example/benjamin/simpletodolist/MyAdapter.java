@@ -18,7 +18,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     private List<Task> tasks;
     private Context context;
-    private ItemOnClickListener mItemOnClickListener;
 
     public MyAdapter(List<Task> tasks, Context context) {
         this.tasks = tasks;
@@ -39,10 +38,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         holder.textViewTask.setText(single_task.getTask());
         holder.textViewDueDay.setText(single_task.getDueDay());
 
-        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+        holder.textViewTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnClickListener.onItemClick(position);
+                Toast.makeText(context, "clicked" + position, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -65,11 +64,4 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     }
 
-    public interface ItemOnClickListener{
-        void onItemClick(int position);
-    }
-
-    public void setOnClick(ItemOnClickListener onClick){
-        this.mOnClickListener = onClick;
-    }
 }
