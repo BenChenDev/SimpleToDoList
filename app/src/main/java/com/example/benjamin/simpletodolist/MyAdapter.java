@@ -49,30 +49,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             }
         });
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
+//        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
 
-                PopupMenu menu = new PopupMenu(context, holder.itemView);
-                menu.inflate(R.menu.recyclerview_menu);
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()){
-                            case R.id.delete:
-                                DB = Room.databaseBuilder(getApplicationContext(), MyRoomDB.class, "tasksDB1").allowMainThreadQueries().build();
-                                DB.tasksDao().delete_task(single_task);
-                                break;
-                                default:
-                                    return false;
-                        }
-                        return false;
-                    }
-                });
-                menu.show();
-                return false;
-            }
-        });
+//                PopupMenu menu = new PopupMenu(context, holder.itemView);
+//                menu.inflate(R.menu.recyclerview_menu);
+//                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem menuItem) {
+//                        switch (menuItem.getItemId()){
+//                            case R.id.delete:
+//                                DB = Room.databaseBuilder(getApplicationContext(), MyRoomDB.class, "tasksDB1").allowMainThreadQueries().build();
+//                                DB.tasksDao().delete_task(single_task);
+//                                break;
+//                                default:
+//                                    return false;
+//                        }
+//                        return false;
+//                    }
+//                });
+//                menu.show();
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -80,13 +80,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         return tasks.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         public TextView textViewTask, textViewDueDay;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTask = itemView.findViewById(R.id.textViewTask);
             textViewDueDay = itemView.findViewById(R.id.textViewDueDay);
+
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.add(Menu.NONE,R.id.delete,Menu.NONE,R.string.delete);
         }
     }
 
