@@ -96,6 +96,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
             contextMenu.add(Menu.NONE,R.id.delete,Menu.NONE,R.string.delete);
         }
+
+//        @Override
+//        public boolean onContextItemSelected(MenuItem item){
+//            Toast.makeText(context, "Selected Item: " +item.getTitle(), Toast.LENGTH_SHORT).show();
+//            return true;
+//        }
     }
 
 }
