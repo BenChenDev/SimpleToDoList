@@ -8,4 +8,5 @@
     <string name="due_date"><font color="#1e90ff">Due date</font></string>
     <string name="repeat"><font color="#1e90ff">Repeat</font></string>
     <string name="task_hint"><font color="#b7cade">Write down the task here ...</font></string>
+    <string name="delete">Delete</string>
 </resources>

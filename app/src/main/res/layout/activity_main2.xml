@@ -151,7 +151,7 @@
         app:srcCompat="@mipmap/check_icon_round" />
 
     <ImageButton
-        android:id="@+id/imageButton12"
+        android:id="@+id/imageButtonMic"
         android:layout_width="40dp"
         android:layout_height="41dp"
         android:layout_marginStart="8dp"

@@ -1,5 +1,6 @@
 package com.example.benjamin.simpletodolist;
 
+import android.arch.persistence.room.Room;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Main2Activity extends AppCompatActivity {
@@ -30,14 +32,13 @@ public class Main2Activity extends AppCompatActivity {
     TextView dEt, tEt;
     DatePickerDialog dPd;
     TimePickerDialog tPd;
-    ImageButton clean1, clean2, saveButton;
-
-    DBAdapter myDb;
+    ImageButton clean1, clean2, saveButton, mic;
 
     ArrayList<String> arrl;
 
-    public static int TTS_DATA_CHECK = 1;
     public static int VOICE_RECOGNITION = 2;
+
+    public static MyRoomDB DB;
 
     private int year, month, day, hour, minute;
     private boolean is24HourView;
@@ -46,7 +47,8 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        openDB();
+
+        DB = Room.databaseBuilder(getApplicationContext(), MyRoomDB.class, "tasksDB1").allowMainThreadQueries().build();
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -59,6 +61,9 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
+        arrl = new ArrayList<String>();
+
+        mic = findViewById(R.id.imageButtonMic);
         dEt = findViewById(R.id.dateTextView);
         tEt = findViewById(R.id.timeTextView);
 
@@ -102,6 +107,13 @@ public class Main2Activity extends AppCompatActivity {
             }
 
         }
+
+        mic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                speechInput();
+            }
+        });
 
         dEt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,68 +214,37 @@ public class Main2Activity extends AppCompatActivity {
                         mMinute = "0" + String.valueOf(minute);
                     }
                     formattedDate = mYear + "-" + mMonth + "-" + mDay + " " + mHour + ":" + mMinute;
-                    Long id  = myDb.insertRow(mTask, formattedDate, mRepeat);
-                    Toast.makeText(getApplicationContext(), "Command Sent! .. ID = " + id, Toast.LENGTH_LONG).show();
-                    Log.d("record created. ID= ", id.toString());
+                    Task_Table_Entity task = new Task_Table_Entity();
+                    task.setTask(mTask);
+                    task.setDue_day(formattedDate);
+                    DB.tasksDao().Add_a_task(task);
+                    Toast.makeText(getApplicationContext(), "Task created", Toast.LENGTH_LONG).show();
                     finish();
-                    Intent openMainActivity= new Intent(Main2Activity.this, MainActivity.class);
-                    startActivity(openMainActivity);
                 }
             }
         });
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == VOICE_RECOGNITION) {
+            task = findViewById(R.id.inputTask);
+            Log.i("SpeechDemo", "## INFO 02: RequestCode VOICE_RECOGNITION = " + requestCode);
+            if (resultCode == RESULT_OK) {
+                List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                for (int i = 0; i < results.size(); i++) {
+                    final String result = results.get(i);
+                    Log.i("SpeechDemo", "## INFO 05: Result: " + result );
+                    task.setText(result);
+                }
+            }
+        } else {
+            Log.i("SpeechDemo", "## ERROR 01: Unexpected RequestCode = " + requestCode);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        closeDB();
-    }
-
-    private void openDB() {
-        myDb = new DBAdapter(this);
-        myDb.open();
-    }
-
-    private void closeDB() {
-        myDb.close();
-    }
-
-    // Display an entire recordset to the screen.
-    private void displayRecordSet(Cursor cursor) {
-        String message = "";
-        // populate the message from the cursor
-
-        // Reset cursor to start, checking to see if there's data:
-        if (cursor.moveToFirst()) {
-            do {
-                // Process the data:
-                int id = cursor.getInt(DBAdapter.COL_ROWID);
-                String task = cursor.getString(DBAdapter.COL_TASK);
-                String dueDate = cursor.getString(DBAdapter.COL_DUEDAY);
-                String repeat = cursor.getString(DBAdapter.COL_REPEAT);
-
-                // Append data to the message:
-                message += "id=" + id
-                        +", task =" + task
-                        +", due date =" + dueDate
-                        +", repeat =" + repeat
-                        +"\n";
-
-                // [TO_DO_B6]
-                // Create arraylist(s)? and use it(them) in the list view
-            } while(cursor.moveToNext());
-        }
-
-        // Close the cursor to avoid a resource leak.
-        cursor.close();
-
-
-        // [TO_DO_B7]
-        // Update the list view
-
-        // [TO_DO_B8]
-        // Display a Toast message
-        Log.d("Test", message);
     }
 
     private String getMonthInString(int month){
@@ -312,12 +293,17 @@ public class Main2Activity extends AppCompatActivity {
         return mMonth;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     public void speechInput(){
         arrl.clear();
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please speak normally into your phone");
-        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
         try{
             startActivityForResult(intent, VOICE_RECOGNITION);

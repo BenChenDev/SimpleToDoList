@@ -1,27 +1,23 @@
 package com.example.benjamin.simpletodolist;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
     ImageButton addTaskButton;
     TextView addNewTask;
 
-    DBAdapter myDb;
-
-    private List<Task> tasks;
+    public static MyRoomDB DB;
 
     //recyclerview
     private RecyclerView recyclerView;
@@ -30,17 +26,17 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        openDB();
-        if(countTask() > 0){
+
+        DB = Room.databaseBuilder(getApplicationContext(), MyRoomDB.class, "tasksDB1").allowMainThreadQueries().build();
+        int rowCount = DB.tasksDao().getCount();
+        if(rowCount > 0){
             setContentView(R.layout.main_activity_layout_2);
 
             //recyclerview
             recyclerView = findViewById(R.id.recyclerView);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-            Cursor cursor = myDb.getAllRows();
-            displayRecordSet(cursor);
+            displayRecordSet();
         } else {
             setContentView(R.layout.activity_main);
             addNewTask = findViewById(R.id.addNewTask);
@@ -65,61 +61,28 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        displayRecordSet();
+    }
+
     public void openMain2Activity(){
         Intent intent = new Intent(this, Main2Activity.class);
         startActivity(intent);
     }
 
-    private void openDB(){
-        myDb = new DBAdapter(this);
-        myDb.open();
-    }
-
-    //check total records
-    private int countTask(){
-        Cursor cursor = myDb.getAllRows();
-        return cursor.getCount();
-    }
-
     // Display an entire recordset to the screen.
-    private void displayRecordSet(Cursor cursor) {
-        tasks = new ArrayList<>();
-        // populate the message from the cursor
-
-        // Reset cursor to start, checking to see if there's data:
-        if (cursor.moveToFirst()) {
-            do {
-                // Process the data:
-                int id = cursor.getInt(DBAdapter.COL_ROWID);
-                String t = cursor.getString(DBAdapter.COL_TASK);
-                String dueDay = cursor.getString(DBAdapter.COL_DUEDAY);
-                String repeat = cursor.getString(DBAdapter.COL_REPEAT);
-
-                Task task = new Task(
-                        t,
-                        "Due in: " + dueDay
-                );
-
-                tasks.add(task);
-
-                // Append data to the message:
-//                message += "id=" + id
-//                        +", first name=" + firstname
-//                        +", last name=" + lastname
-//                        +", marks=" + marks
-//                        +"\n";
-
-            } while(cursor.moveToNext());
-        }
-
-        // Close the cursor to avoid a resource leak.
-        cursor.close();
+    private void displayRecordSet() {
+        List<Task_Table_Entity> tasks = DB.tasksDao().getTasks();
 
         // Update the list view
         adapter = new MyAdapter(tasks, this);
         recyclerView.setAdapter(adapter);
-
-        // Display a Toast message
-        //Log.d("Test", message);
     }
+
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//        return super.onContextItemSelected(item);
+//    }
 }
