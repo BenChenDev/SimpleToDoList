@@ -64,7 +64,17 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onRestart(){
         super.onRestart();
-        displayRecordSet();
+        int rowCount = DB.tasksDao().getCount();
+        if(rowCount > 0){
+            setContentView(R.layout.main_activity_layout_2);
+            //recyclerview
+            recyclerView = findViewById(R.id.recyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            displayRecordSet();
+        } else {
+            setContentView(R.layout.activity_main);
+        }
     }
 
     public void openMain2Activity(){
