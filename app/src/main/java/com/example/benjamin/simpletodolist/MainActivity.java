@@ -75,6 +75,14 @@ public class MainActivity extends AppCompatActivity{
         } else {
             setContentView(R.layout.activity_main);
         }
+
+        addTaskButton = findViewById(R.id.blueAddButton);
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openMain2Activity();
+            }
+        });
     }
 
     public void openMain2Activity(){
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     // Display an entire recordset to the screen.
-    private void displayRecordSet() {
+    public void displayRecordSet() {
         List<Task_Table_Entity> tasks = DB.tasksDao().getTasks();
 
         // Update the list view

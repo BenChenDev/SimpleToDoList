@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,34 +44,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "clicked" + position, Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(, Main2Activity.class);
             }
         });
 
-//        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-
-//                PopupMenu menu = new PopupMenu(context, holder.itemView);
-//                menu.inflate(R.menu.recyclerview_menu);
-//                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    @Override
-//                    public boolean onMenuItemClick(MenuItem menuItem) {
-//                        switch (menuItem.getItemId()){
-//                            case R.id.delete:
-//                                DB = Room.databaseBuilder(getApplicationContext(), MyRoomDB.class, "tasksDB1").allowMainThreadQueries().build();
-//                                DB.tasksDao().delete_task(single_task);
-//                                break;
-//                                default:
-//                                    return false;
-//                        }
-//                        return false;
-//                    }
-//                });
-//                menu.show();
-//                return false;
-//            }
-//        });
     }
 
     @Override
@@ -93,15 +68,29 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
 
         @Override
-        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            contextMenu.add(Menu.NONE,R.id.delete,Menu.NONE,R.string.delete);
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, final ContextMenu.ContextMenuInfo contextMenuInfo) {
+            final MenuItem Delete = contextMenu.add(Menu.NONE, 1, 1, R.string.delete);
+            Delete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    boolean result;
+                    switch (item.getItemId()){
+                        case 1:
+                            Toast.makeText(context, "Task Deleted", Toast.LENGTH_LONG).show();
+                            int position = item.getOrder()-1;
+                            final Task_Table_Entity current_task = tasks.get(position);
+                            DB = Room.databaseBuilder(context, MyRoomDB.class, "tasksDB1").allowMainThreadQueries().build();
+                            DB.tasksDao().delete_task(current_task);
+                            result = true;
+                            break;
+                        default:
+                            result = false;
+                    }
+                    return result;
+                }
+            });
         }
 
-//        @Override
-//        public boolean onContextItemSelected(MenuItem item){
-//            Toast.makeText(context, "Selected Item: " +item.getTitle(), Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
     }
 
 }
