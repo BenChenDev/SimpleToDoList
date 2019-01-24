@@ -72,7 +72,7 @@ public class Main2Activity extends AppCompatActivity {
         clean2 = findViewById(R.id.blueClean2);
         saveButton = findViewById(R.id.checkMark);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         if(intent.getExtras() != null){
             String message = intent.getExtras().getString("message");
             task.setText(message);
