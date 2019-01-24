@@ -18,6 +18,11 @@ public class Task_Table_Entity {
     @ColumnInfo(name = "due_day")
     private String due_day;
 
+    public Task_Table_Entity(String task, String due_day) {
+        this.task = task;
+        this.due_day = due_day;
+    }
+
     public int getId() {
         return id;
     }
