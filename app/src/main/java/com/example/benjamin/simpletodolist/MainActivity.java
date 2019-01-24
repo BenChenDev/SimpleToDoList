@@ -4,12 +4,14 @@ import android.arch.persistence.room.Room;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnTaskClickListener{
     private ImageButton addTaskButton, mic;
     private TextView addNewTask;
     private ArrayList<String> arrl;
@@ -47,12 +49,6 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             displayRecordSet();
-
-            recyclerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
         } else {
             setContentView(R.layout.activity_main);
             arrl = new ArrayList<String>();
@@ -94,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         List<Task_Table_Entity> tasks = DB.tasksDao().getTasks();
 
         // Update the list view
-        adapter = new MyAdapter(tasks, this);
+        adapter = new MyAdapter(tasks, this, this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -128,5 +124,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.i("SpeechDemo", "## ERROR 01: Unexpected RequestCode = " + requestCode);
         }
+    }
+
+    @Override
+    public void onItemClick(Task_Table_Entity task) {
+        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+        intent.putExtra("task", task.getTask());
+        intent.putExtra("dueDay", task.getDue_day());
+        startActivity(intent);
     }
 }

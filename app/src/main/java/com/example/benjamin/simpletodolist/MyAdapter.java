@@ -14,10 +14,12 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     private List<Task_Table_Entity> tasks;
     private Context context;
+    private OnTaskClickListener listener;
 
-    public MyAdapter(List<Task_Table_Entity> tasks, Context context) {
+    public MyAdapter(List<Task_Table_Entity> tasks, Context context, OnTaskClickListener listener) {
         this.tasks = tasks;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,6 +35,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         final Task_Table_Entity single_task = tasks.get(position);
         holder.textViewTask.setText(single_task.getTask());
         holder.textViewDueDay.setText(single_task.getDue_day());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(single_task);
+            }
+        });
     }
 
     @Override

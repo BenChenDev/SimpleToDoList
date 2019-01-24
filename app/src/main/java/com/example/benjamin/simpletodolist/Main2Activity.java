@@ -74,8 +74,15 @@ public class Main2Activity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         if(intent.getExtras() != null){
+            //voice input
             String message = intent.getExtras().getString("message");
-            task.setText(message);
+            String taskFromMain = intent.getExtras().getString("task");
+            if(message != ""){
+                task.setText(message);
+            }
+            if(taskFromMain != ""){
+                task.setText(taskFromMain);
+            }
         }
 
 
