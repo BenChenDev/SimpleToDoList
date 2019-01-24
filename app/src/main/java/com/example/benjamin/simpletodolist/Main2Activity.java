@@ -63,6 +63,7 @@ public class Main2Activity extends AppCompatActivity {
 
         arrl = new ArrayList<String>();
 
+        task = findViewById(R.id.inputTask);
         mic = findViewById(R.id.imageButtonMic);
         dEt = findViewById(R.id.dateTextView);
         tEt = findViewById(R.id.timeTextView);
@@ -70,6 +71,13 @@ public class Main2Activity extends AppCompatActivity {
         clean1 = findViewById(R.id.blueClean1);
         clean2 = findViewById(R.id.blueClean2);
         saveButton = findViewById(R.id.checkMark);
+
+        Intent intent = getIntent();
+        if(intent.getExtras() != null){
+            String message = intent.getExtras().getString("message");
+            task.setText(message);
+        }
+
 
         Calendar c = Calendar.getInstance();
         if(dEt.getText().toString().equals("")){
