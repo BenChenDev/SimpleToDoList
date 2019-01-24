@@ -28,7 +28,8 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/checkBox"
-            android:text="Task" />
+            android:text="Task"
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/textViewDueDay"
