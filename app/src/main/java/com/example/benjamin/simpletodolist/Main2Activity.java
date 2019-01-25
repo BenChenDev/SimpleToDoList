@@ -4,7 +4,6 @@ import android.arch.persistence.room.Room;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.database.Cursor;
 import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -72,16 +71,27 @@ public class Main2Activity extends AppCompatActivity {
         clean2 = findViewById(R.id.blueClean2);
         saveButton = findViewById(R.id.checkMark);
 
+        //getIntent(), data from main
         final Intent intent = getIntent();
         if(intent.getExtras() != null){
             //voice input
             String message = intent.getExtras().getString("message");
             String taskFromMain = intent.getExtras().getString("task");
+            String dueDayFromMain = intent.getExtras().getString("dueDay");
             if(message != ""){
                 task.setText(message);
             }
             if(taskFromMain != ""){
                 task.setText(taskFromMain);
+            }
+            if(dueDayFromMain != ""){
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                Date convertedDate = new Date();
+                try {
+                    convertedDate = dateFormat.parse(dueDayFromMain);
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -91,11 +101,10 @@ public class Main2Activity extends AppCompatActivity {
             year = c.get(Calendar.YEAR);
             day = c.get(Calendar.DAY_OF_MONTH);
             month = c.get(Calendar.MONTH);
-
-            SimpleDateFormat sDf = new SimpleDateFormat("EEE");
-            Date date = new Date(year, month, day-1);
-            String dayOfWeek = sDf.format(date);
+            String dayOfWeek = getDayOfweek(year, month, day);
             dEt.setText(dayOfWeek + ", " + getMonthInString(month) + " " + day + ", " + year);
+        } else{
+            //check intent data that from main activity
         }
 
         if(tEt.getText().toString().equals("")){
@@ -115,8 +124,8 @@ public class Main2Activity extends AppCompatActivity {
                 apm = "pm";
             }
 
-            if(hour > 12){
-                tEt.setText((hour-12) + ": " + mMinute + " " + apm);
+            if(hour < 10){
+                tEt.setText("0" + hour + ": " + mMinute + " " + apm);
             } else {
                 tEt.setText(hour + ": " + mMinute + " " + apm);
             }
@@ -137,9 +146,7 @@ public class Main2Activity extends AppCompatActivity {
                 dPd = new DatePickerDialog(Main2Activity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
-                        SimpleDateFormat sDf = new SimpleDateFormat("EEE");
-                        Date date = new Date(mYear, mMonth, mDay-1);
-                        String dayOfWeek = sDf.format(date);
+                        String dayOfWeek = getDayOfweek(mYear, mMonth, mDay);
                         dEt.setText(dayOfWeek + ", " + getMonthInString(mMonth) + " " + mDay + ", " + mYear);
                         year = mYear;
                         day = mDay;
@@ -160,6 +167,7 @@ public class Main2Activity extends AppCompatActivity {
                         Calendar time = Calendar.getInstance();
                         time.set(Calendar.HOUR_OF_DAY, mHour);
                         time.set(Calendar.MINUTE, mMinute);
+
                         hour = mHour;
                         minute = mMinute;
                         is24HourView = false;
@@ -306,6 +314,12 @@ public class Main2Activity extends AppCompatActivity {
 
         }
         return mMonth;
+    }
+
+    private String getDayOfweek(int mYear, int mMonth, int mDay){
+        SimpleDateFormat sDf = new SimpleDateFormat("EEE");
+        Date date = new Date(mYear, mMonth, mDay-1);
+        return sDf.format(date);
     }
 
     @Override

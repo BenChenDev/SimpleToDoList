@@ -133,4 +133,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
         intent.putExtra("dueDay", task.getDue_day());
         startActivity(intent);
     }
+
+    @Override
+    public void onItemLongClick(Task_Table_Entity task) {
+        Toast.makeText(getApplicationContext(), "long pressed", Toast.LENGTH_LONG).show();
+    }
 }

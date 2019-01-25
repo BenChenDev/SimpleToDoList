@@ -41,6 +41,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                 listener.onItemClick(single_task);
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                listener.onItemLongClick(single_task);
+                return true;
+            }
+        });
     }
 
     @Override
