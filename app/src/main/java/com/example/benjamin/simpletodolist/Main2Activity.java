@@ -32,6 +32,7 @@ public class Main2Activity extends AppCompatActivity {
     DatePickerDialog dPd;
     TimePickerDialog tPd;
     ImageButton clean1, clean2, saveButton, mic;
+    Date convertedDate = null;
 
     ArrayList<String> arrl;
 
@@ -39,7 +40,7 @@ public class Main2Activity extends AppCompatActivity {
 
     public static MyRoomDB DB;
 
-    private int year, month, day, hour, minute;
+    private int year, month, day, hour, minute, idFromMain;
     private boolean is24HourView;
 
     @Override
@@ -76,6 +77,7 @@ public class Main2Activity extends AppCompatActivity {
         if(intent.getExtras() != null){
             //voice input
             String message = intent.getExtras().getString("message");
+            idFromMain = intent.getExtras().getInt("id");
             String taskFromMain = intent.getExtras().getString("task");
             String dueDayFromMain = intent.getExtras().getString("dueDay");
             if(message != ""){
@@ -86,7 +88,7 @@ public class Main2Activity extends AppCompatActivity {
             }
             if(dueDayFromMain != ""){
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                Date convertedDate = new Date();
+                convertedDate = new Date();
                 try {
                     convertedDate = dateFormat.parse(dueDayFromMain);
                 } catch (java.text.ParseException e) {
@@ -97,14 +99,15 @@ public class Main2Activity extends AppCompatActivity {
 
 
         Calendar c = Calendar.getInstance();
+        if(convertedDate != null){
+            c.setTime(convertedDate);
+        }
         if(dEt.getText().toString().equals("")){
             year = c.get(Calendar.YEAR);
             day = c.get(Calendar.DAY_OF_MONTH);
             month = c.get(Calendar.MONTH);
             String dayOfWeek = getDayOfweek(year, month, day);
-            dEt.setText(dayOfWeek + ", " + getMonthInString(month) + " " + day + ", " + year);
-        } else{
-            //check intent data that from main activity
+            dEt.setText(dayOfWeek  + ", "+ getMonthInString(month) + " " + day + ", " + year);
         }
 
         if(tEt.getText().toString().equals("")){
@@ -126,8 +129,10 @@ public class Main2Activity extends AppCompatActivity {
 
             if(hour < 10){
                 tEt.setText("0" + hour + ": " + mMinute + " " + apm);
-            } else {
-                tEt.setText(hour + ": " + mMinute + " " + apm);
+            } else if(hour > 12 && hour < 22){
+                tEt.setText("0" + (hour-12) + ": " + mMinute + " " + apm);
+            } else if(hour > 21){
+                tEt.setText((hour-12) + ": " + mMinute + " " + apm);
             }
 
         }
@@ -240,8 +245,14 @@ public class Main2Activity extends AppCompatActivity {
                     Task_Table_Entity task = new Task_Table_Entity();
                     task.setTask(mTask);
                     task.setDue_day(formattedDate);
-                    DB.tasksDao().Add_a_task(task);
-                    Toast.makeText(getApplicationContext(), "Task created", Toast.LENGTH_LONG).show();
+                    if(idFromMain > 0){
+                        task.setId(idFromMain);
+                        DB.tasksDao().updateTask(task);
+                        Toast.makeText(getApplicationContext(), "Task updated", Toast.LENGTH_LONG).show();
+                    } else {
+                        DB.tasksDao().Add_a_task(task);
+                        Toast.makeText(getApplicationContext(), "Task created", Toast.LENGTH_LONG).show();
+                    }
                     finish();
                 }
             }

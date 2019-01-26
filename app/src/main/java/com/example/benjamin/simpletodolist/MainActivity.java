@@ -2,9 +2,11 @@ package com.example.benjamin.simpletodolist;
 
 import android.arch.persistence.room.Room;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -129,13 +131,33 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
     @Override
     public void onItemClick(Task_Table_Entity task) {
         Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+        intent.putExtra("id", task.getId());
         intent.putExtra("task", task.getTask());
         intent.putExtra("dueDay", task.getDue_day());
         startActivity(intent);
     }
 
     @Override
-    public void onItemLongClick(Task_Table_Entity task) {
-        Toast.makeText(getApplicationContext(), "long pressed", Toast.LENGTH_LONG).show();
+    public void onItemLongClick(final Task_Table_Entity currentTask) {
+        String mTask = currentTask.getTask();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        alertDialog.setMessage("Do you want to delete " + mTask + "?").setCancelable(false)
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DB.tasksDao().delete_task(currentTask);
+                displayRecordSet();
+            }
+        })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialog.create();
+        alert.setTitle("Delete task");
+        alert.show();
     }
 }
