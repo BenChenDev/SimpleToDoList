@@ -1,6 +1,5 @@
 package com.example.benjamin.simpletodolist;
 
-import android.arch.persistence.room.Room;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -17,6 +16,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.speech.RecognizerIntent;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,17 +44,18 @@ public class Main2Activity extends AppCompatActivity {
 
     public static int VOICE_RECOGNITION = 2;
 
-    public static MyRoomDB DB;
-
-    private int year, month, day, hour, minute, idFromMain;
+    private int year, month, day, hour, minute;
     private boolean is24HourView;
+    private String idFromMain = "";
+
+    DatabaseReference databaseTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        DB = Room.databaseBuilder(getApplicationContext(), MyRoomDB.class, "tasksDB1").allowMainThreadQueries().build();
+        databaseTasks = FirebaseDatabase.getInstance().getReference("tasks");
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -77,7 +84,7 @@ public class Main2Activity extends AppCompatActivity {
         if(intent.getExtras() != null){
             //voice input
             String message = intent.getExtras().getString("message");
-            idFromMain = intent.getExtras().getInt("id");
+            idFromMain = intent.getExtras().getString("id");
             String taskFromMain = intent.getExtras().getString("task");
             String dueDayFromMain = intent.getExtras().getString("dueDay");
             if(message != ""){
@@ -205,7 +212,7 @@ public class Main2Activity extends AppCompatActivity {
             public void onClick(View v) {
                 task = findViewById(R.id.inputTask);
 
-                String mTask = task.getText().toString();
+                final String mTask = task.getText().toString();
                 String mDueDay = dEt.getText().toString();
                 String mDueTime = tEt.getText().toString();
 
@@ -217,8 +224,13 @@ public class Main2Activity extends AppCompatActivity {
                 }else if(mDueTime.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Please set a time for the due day.",Toast.LENGTH_LONG).show();
                 } else {
-                    String formattedDate, mYear = String.valueOf(year), mMonth = String.valueOf(month+1), mDay = String.valueOf(day), mHour = String.valueOf(hour),
-                            mMinute = String.valueOf(minute), mRepeat = "tast";
+                    final String formattedDate;
+                    final String mYear = String.valueOf(year);
+                    String mMonth = String.valueOf(month+1);
+                    String mDay = String.valueOf(day);
+                    String mHour = String.valueOf(hour);
+                    String mMinute = String.valueOf(minute);
+                    final String mRepeat = "tast";
                     if((month+1) < 10){
                         mMonth = "0" + String.valueOf(month+1);
                     }
@@ -232,16 +244,21 @@ public class Main2Activity extends AppCompatActivity {
                         mMinute = "0" + String.valueOf(minute);
                     }
                     formattedDate = mYear + "-" + mMonth + "-" + mDay + " " + mHour + ":" + mMinute;
-                    Task_Table_Entity task = new Task_Table_Entity();
-                    task.setTask(mTask);
-                    task.setDue_day(formattedDate);
-                    if(idFromMain > 0){
-                        task.setId(idFromMain);
-                        DB.tasksDao().updateTask(task);
-                        Toast.makeText(getApplicationContext(), "Task updated", Toast.LENGTH_LONG).show();
-                    } else {
-                        DB.tasksDao().Add_a_task(task);
+
+                    if (idFromMain.isEmpty()) {
+                        String id = databaseTasks.push().getKey();
+                        Task task = new Task(id, mTask, formattedDate);
+                        databaseTasks.child(id).setValue(task);
                         Toast.makeText(getApplicationContext(), "Task created", Toast.LENGTH_LONG).show();
+                    } else {
+                        DatabaseReference ref = FirebaseDatabase.getInstance()
+                                .getReference()
+                                .child("tasks")
+                                .child(idFromMain);
+                        ref.child("task").setValue(mTask);
+                        ref.child("due_day").setValue(formattedDate);
+
+                        Toast.makeText(getApplicationContext(), "Task updated", Toast.LENGTH_LONG).show();
                     }
                     finish();
                 }

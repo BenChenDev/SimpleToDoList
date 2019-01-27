@@ -12,11 +12,11 @@ import android.widget.TextView;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
-    private List<Task_Table_Entity> tasks;
+    private List<Task> tasks;
     private Context context;
     private OnTaskClickListener listener;
 
-    public MyAdapter(List<Task_Table_Entity> tasks, Context context, OnTaskClickListener listener) {
+    public MyAdapter(List<Task> tasks, Context context, OnTaskClickListener listener) {
         this.tasks = tasks;
         this.context = context;
         this.listener = listener;
@@ -32,7 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        final Task_Table_Entity single_task = tasks.get(position);
+        final Task single_task = tasks.get(position);
         holder.textViewTask.setText(single_task.getTask());
         holder.textViewDueDay.setText(single_task.getDue_day());
         holder.itemView.setOnClickListener(new View.OnClickListener() {

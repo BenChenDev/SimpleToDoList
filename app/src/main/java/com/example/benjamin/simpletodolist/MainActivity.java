@@ -1,6 +1,5 @@
 package com.example.benjamin.simpletodolist;
 
-import android.arch.persistence.room.Room;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,14 +12,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,52 +31,68 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
     private ImageButton addTaskButton, mic;
     private TextView addNewTask;
     private ArrayList<String> arrl;
+    private List<Task> tasks;
     public static int VOICE_RECOGNITION = 2;
-    public static MyRoomDB DB;
-
     //recyclerview
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
 
+    DatabaseReference databaseTasks;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DB = Room.databaseBuilder(getApplicationContext(), MyRoomDB.class, "tasksDB1").allowMainThreadQueries().build();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
+        tasks = new ArrayList<>();
 
-        myRef.setValue("Hello, World!");
-}
+        databaseTasks = FirebaseDatabase.getInstance().getReference("tasks");
+
+        databaseTasks.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                tasks.clear();
+                for(DataSnapshot taskSnapshot : dataSnapshot.getChildren()){
+                    Task task = taskSnapshot.getValue(Task.class);
+                    tasks.add(task);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        int rowCount = DB.tasksDao().getCount();
-        if(rowCount > 0){
+    protected void onStart() {
+        super.onStart();
+
+//        if(tasks.size() > 0){
             setContentView(R.layout.main_activity_layout_2);
             //recyclerview
             recyclerView = findViewById(R.id.recyclerView);
             recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this) );
             displayRecordSet();
-        } else {
-            setContentView(R.layout.activity_main);
-            arrl = new ArrayList<String>();
-            mic = findViewById(R.id.mic);
-            addNewTask = findViewById(R.id.addNewTask);
-            mic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    speechInput();
-                }
-            });
-            addNewTask.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    openMain2Activity();
-                }
-            });
-        }
+//        } else {
+//            setContentView(R.layout.activity_main);
+//            tasks = new ArrayList<Task>();
+//            mic = findViewById(R.id.mic);
+//            addNewTask = findViewById(R.id.addNewTask);
+//            mic.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    speechInput();
+//                }
+//            });
+//            addNewTask.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    openMain2Activity();
+//                }
+//            });
+//        }
+
         Toolbar topToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(topToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -96,9 +113,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
 
     // Display an entire recordset to the screen.
     public void displayRecordSet() {
-        List<Task_Table_Entity> tasks = DB.tasksDao().getTasks();
-
-        // Update the list view
         adapter = new MyAdapter(tasks, this, this);
         recyclerView.setAdapter(adapter);
     }
@@ -136,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
     }
 
     @Override
-    public void onItemClick(Task_Table_Entity task) {
+    public void onItemClick(Task task) {
         Intent intent = new Intent(MainActivity.this, Main2Activity.class);
         intent.putExtra("id", task.getId());
         intent.putExtra("task", task.getTask());
@@ -145,14 +159,29 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
     }
 
     @Override
-    public void onItemLongClick(final Task_Table_Entity currentTask) {
+    public void onItemLongClick(final Task currentTask) {
         String mTask = currentTask.getTask();
+        final String id = currentTask.getId();
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         alertDialog.setMessage("Do you want to delete " + mTask + "?").setCancelable(false)
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                DB.tasksDao().delete_task(currentTask);
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                Query query = ref.child("tasks").orderByChild("id").equalTo(id);
+
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                            appleSnapshot.getRef().removeValue();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
                 displayRecordSet();
             }
         })
