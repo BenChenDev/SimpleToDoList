@@ -126,14 +126,7 @@ public class Main2Activity extends AppCompatActivity {
             } else {
                 apm = "pm";
             }
-
-            if(hour < 10){
-                tEt.setText("0" + hour + ": " + mMinute + " " + apm);
-            } else if(hour > 12 && hour < 22){
-                tEt.setText("0" + (hour-12) + ": " + mMinute + " " + apm);
-            } else if(hour > 21){
-                tEt.setText((hour-12) + ": " + mMinute + " " + apm);
-            }
+            tEt.setText(hourToString(hour) + ": " + mMinute + " " + apm);
 
         }
 
@@ -181,15 +174,12 @@ public class Main2Activity extends AppCompatActivity {
                         } else {
                             apm = "pm";
                         }
-                        if(mHour > 12){
-                            mHour = mHour - 12;
-                        }
                         if(mMinute < 10){
                             mM = "0" + String.valueOf(mMinute);
                         } else {
                             mM = String.valueOf(mMinute);
                         }
-                        tEt.setText(mHour + ": " + mM + " " + apm);
+                        tEt.setText(hourToString(mHour) + ": " + mM + " " + apm);
                     }
                 }, hour, minute, is24HourView);
                 tPd.show();
@@ -350,5 +340,19 @@ public class Main2Activity extends AppCompatActivity {
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private String hourToString(int hour){
+        String mH = String.valueOf(hour);
+        if(hour < 10){
+            mH = "0" + hour;
+        }
+        if(hour > 12 && hour < 22){
+            mH = "0" + (hour-12);
+        }
+        if(hour > 21){
+            mH = String.valueOf(hour-12);
+        }
+        return mH;
     }
 }
