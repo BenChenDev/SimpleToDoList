@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
         super.onCreate(savedInstanceState);
         tasks = new ArrayList<>();
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         databaseTasks = FirebaseDatabase.getInstance().getReference("tasks");
 
         databaseTasks.addValueEventListener(new ValueEventListener() {
