@@ -83,13 +83,13 @@ public class Main2Activity extends AppCompatActivity {
             idFromMain = intent.getExtras().getString("id");
             String taskFromMain = intent.getExtras().getString("task");
             String dueDayFromMain = intent.getExtras().getString("dueDay");
-            if(message != ""){
+            if(message != null){
                 task.setText(message);
             }
-            if(taskFromMain != ""){
+            if(taskFromMain != null){
                 task.setText(taskFromMain);
             }
-            if(dueDayFromMain != ""){
+            if(dueDayFromMain != null){
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                 convertedDate = new Date();
                 try {
@@ -284,7 +284,7 @@ public class Main2Activity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private String getMonthInString(int month){
+    public static String getMonthInString(int month){
         String mMonth;
         switch (month){
             case 0:
@@ -355,7 +355,7 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
-    private String hourToString(int hour){
+    public static String hourToString(int hour){
         String mH = String.valueOf(hour);
         if(hour < 10){
             mH = "0" + hour;

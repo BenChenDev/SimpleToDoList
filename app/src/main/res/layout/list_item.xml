@@ -5,9 +5,9 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     app:cardBackgroundColor="@android:color/white">
 
     <RelativeLayout
@@ -28,8 +28,10 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/checkBox"
+            android:maxLines="1"
             android:text="Task"
-            android:maxLines="1"/>
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/textViewDueDay"
@@ -39,7 +41,9 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/checkBox"
-            android:text="Due Day" />
+            android:text="Due Day"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

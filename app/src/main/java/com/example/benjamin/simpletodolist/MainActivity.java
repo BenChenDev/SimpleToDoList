@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tasks = new ArrayList<>();
-
+        arrl = new ArrayList<>();
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         databaseTasks = FirebaseDatabase.getInstance().getReference("tasks");
 
@@ -55,54 +55,49 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
                     Task task = taskSnapshot.getValue(Task.class);
                     tasks.add(task);
                 }
+
+                if(tasks.size() > 0){
+                    setContentView(R.layout.main_activity_layout_2);
+                    //recyclerview
+                    recyclerView = findViewById(R.id.recyclerView);
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this) );
+                    displayRecordSet();
+                } else {
+                    setContentView(R.layout.activity_main);
+                    tasks = new ArrayList<Task>();
+                    mic = findViewById(R.id.mic);
+                    addNewTask = findViewById(R.id.addNewTask);
+                    mic.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            speechInput();
+                        }
+                    });
+                    addNewTask.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openMain2Activity();
+                        }
+                    });
+                }
+
+                Toolbar topToolbar = findViewById(R.id.toolbar);
+                setSupportActionBar(topToolbar);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+                addTaskButton = findViewById(R.id.blueAddButton);
+                addTaskButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openMain2Activity();
+                    }
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-//        if(tasks.size() > 0){
-            setContentView(R.layout.main_activity_layout_2);
-            //recyclerview
-            recyclerView = findViewById(R.id.recyclerView);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this) );
-            displayRecordSet();
-//        } else {
-//            setContentView(R.layout.activity_main);
-//            tasks = new ArrayList<Task>();
-//            mic = findViewById(R.id.mic);
-//            addNewTask = findViewById(R.id.addNewTask);
-//            mic.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    speechInput();
-//                }
-//            });
-//            addNewTask.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    openMain2Activity();
-//                }
-//            });
-//        }
-
-        Toolbar topToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(topToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        addTaskButton = findViewById(R.id.blueAddButton);
-        addTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openMain2Activity();
             }
         });
     }
