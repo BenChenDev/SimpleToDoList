@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
         String mTask = currentTask.getTask();
         final String id = currentTask.getId();
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        alertDialog.setMessage("Do you want to delete " + mTask + "?").setCancelable(false)
+        alertDialog.setMessage("Do you want to delete " + mTask + " tasks ?").setCancelable(false)
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

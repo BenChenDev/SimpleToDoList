@@ -67,7 +67,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         if(due_Year == year && due_Month == month){
             int diff = (due_Day - day);
             holder.textViewDueDay.setText(Main2Activity.hourToString(due_hour) + ": " + Main2Activity.minuteToString(due_min) + "   " + due_Day + "-" + Main2Activity.getMonthInString(due_Month) + "-" + due_Year);
-            holder.textViewDueDay.setTextColor(Color.parseColor("#FFE91E63"));
+            holder.textViewDueDay.setTextColor(Color.parseColor("#FF1E90FF"));
             if(diff == 0){
                 holder.textViewDueDay.setText("Today, " + Main2Activity.hourToString(due_hour) + ": " + Main2Activity.minuteToString(due_min));
                 holder.textViewDueDay.setTextColor(Color.parseColor("#FFE91E63"));
