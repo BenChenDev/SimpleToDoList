@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "383818252194",
+    "firebase_url": "https://simpletodolist-12ecc.firebaseio.com",
+    "project_id": "simpletodolist-12ecc",
+    "storage_bucket": "simpletodolist-12ecc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383818252194:android:44c529ec5404a7ee",
+        "android_client_info": {
+          "package_name": "com.example.benjamin.simpletodolist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "383818252194-presfchkmbqifgaot9euvttvfbjdasmu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.benjamin.simpletodolist",
+            "certificate_hash": "08610bac26f86b42413909a2bb2a87c6b0479701"
+          }
+        },
+        {
+          "client_id": "383818252194-48ot2a7r7jceo0u11l1qe4ck7amn4nok.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.benjamin.simpletodolist",
+            "certificate_hash": "5be8af9069aa2ac4eb39227b4584f52acfa92cfe"
+          }
+        },
+        {
+          "client_id": "383818252194-p0p3in92ee4t681ufpk5igt99j2fvjad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTfx6b2R3K01Sm6OpHarZfRfyon0tG0JM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "383818252194-p0p3in92ee4t681ufpk5igt99j2fvjad.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
