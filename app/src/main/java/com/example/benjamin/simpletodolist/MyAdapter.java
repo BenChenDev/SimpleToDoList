@@ -8,11 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +23,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     private List<Task> tasks;
     private Context context;
     private OnTaskClickListener listener;
+    public List<String> checkedItems = new ArrayList<>();
 
     public MyAdapter(List<Task> tasks, Context context, OnTaskClickListener listener) {
         this.tasks = tasks;
@@ -63,18 +66,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
         if(due_Year == year && due_Month == month){
             int diff = (due_Day - day);
-            holder.textViewDueDay.setText(Main2Activity.hourToString(due_hour) + ": " + due_min + "   " + due_Day + "-" + Main2Activity.getMonthInString(due_Month) + "-" + due_Year);
+            holder.textViewDueDay.setText(Main2Activity.hourToString(due_hour) + ": " + Main2Activity.minuteToString(due_min) + "   " + due_Day + "-" + Main2Activity.getMonthInString(due_Month) + "-" + due_Year);
             holder.textViewDueDay.setTextColor(Color.parseColor("#FFE91E63"));
             if(diff == 0){
-                holder.textViewDueDay.setText("Today, " + Main2Activity.hourToString(due_hour) + ": " + due_min);
+                holder.textViewDueDay.setText("Today, " + Main2Activity.hourToString(due_hour) + ": " + Main2Activity.minuteToString(due_min));
                 holder.textViewDueDay.setTextColor(Color.parseColor("#FFE91E63"));
             }
             if(diff == 1){
-                holder.textViewDueDay.setText("Tomorrow, " + Main2Activity.hourToString(due_hour) + ": " + due_min);
+                holder.textViewDueDay.setText("Tomorrow, " + Main2Activity.hourToString(due_hour) + ": " + Main2Activity.minuteToString(due_min));
                 holder.textViewDueDay.setTextColor(Color.parseColor("#FF1E90FF"));
             }
         }else{
-            holder.textViewDueDay.setText(Main2Activity.hourToString(due_hour) + ": " + due_min + "   " + due_Day + "-" + Main2Activity.getMonthInString(due_Month) + "-" + due_Year);
+            holder.textViewDueDay.setText(Main2Activity.hourToString(due_hour) + ": " + Main2Activity.minuteToString(due_min) + "   " + due_Day + "-" + Main2Activity.getMonthInString(due_Month) + "-" + due_Year);
             holder.textViewDueDay.setTextColor(Color.parseColor("#FF1E90FF"));
         }
 
@@ -89,6 +92,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             public boolean onLongClick(View v) {
                 listener.onItemLongClick(single_task);
                 return true;
+            }
+        });
+
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(holder.checkBox.isChecked()){
+                    checkedItems.add(tasks.get(position).getId());
+                }
+                if (!holder.checkBox.isChecked()){
+                    checkedItems.remove(tasks.get(position).getId());
+                }
             }
         });
     }
@@ -107,7 +122,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             textViewTask = itemView.findViewById(R.id.textViewTask);
             textViewDueDay = itemView.findViewById(R.id.textViewDueDay);
             checkBox = itemView.findViewById(R.id.checkBox);
-
         }
     }
 }

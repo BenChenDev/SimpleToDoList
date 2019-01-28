@@ -12,9 +12,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,11 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements OnTaskClickListener{
-    private ImageButton addTaskButton, mic;
+public class MainActivity extends AppCompatActivity implements OnTaskClickListener, PopupMenu.OnMenuItemClickListener {
+    public ImageButton addTaskButton, mic, setting;
     private TextView addNewTask;
     private ArrayList<String> arrl;
     private List<Task> tasks;
+    private List<String> checkedIds;
     public static int VOICE_RECOGNITION = 2;
     //recyclerview
     private RecyclerView recyclerView;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkedIds = new ArrayList<>();
         tasks = new ArrayList<>();
         arrl = new ArrayList<>();
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -58,6 +63,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
 
                 if(tasks.size() > 0){
                     setContentView(R.layout.main_activity_layout_2);
+                    setting = findViewById(R.id.imageButtonSetting);
+                    setting.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showPopup(view);
+                        }
+                    });
                     //recyclerview
                     recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setHasFixedSize(true);
@@ -110,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
     // Display an entire recordset to the screen.
     public void displayRecordSet() {
         adapter = new MyAdapter(tasks, this, this);
+        checkedIds = ((MyAdapter) adapter).checkedItems;
         recyclerView.setAdapter(adapter);
     }
 
@@ -191,5 +204,62 @@ public class MainActivity extends AppCompatActivity implements OnTaskClickListen
         AlertDialog alert = alertDialog.create();
         alert.setTitle("Delete task");
         alert.show();
+    }
+
+    private void showPopup(View v){
+        PopupMenu menu = new PopupMenu(this, v);
+        menu.setOnMenuItemClickListener(this);
+        menu.inflate(R.menu.setting_menu);
+        menu.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch(menuItem.getItemId()){
+            case R.id.Delete:
+
+                if(checkedIds.size() > 0){
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                    alertDialog.setMessage("Do you want to delete selected "+checkedIds.size()+"?").setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                                    for(String id : checkedIds){
+                                        Query query = ref.child("tasks").orderByChild("id").equalTo(id);
+                                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                                                    appleSnapshot.getRef().removeValue();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                            }
+                                        });
+                                    }
+                                    displayRecordSet();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            });
+                    AlertDialog alert = alertDialog.create();
+                    alert.setTitle("Delete task");
+                    alert.show();
+                }else {
+                    Toast.makeText(MainActivity.this, "No task is selected", Toast.LENGTH_LONG).show();
+                }
+
+                return true;
+                default:
+                    return false;
+        }
     }
 }

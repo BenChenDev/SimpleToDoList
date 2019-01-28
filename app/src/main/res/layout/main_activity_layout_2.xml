@@ -60,4 +60,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@mipmap/blue_add_circle" />
 
+    <ImageButton
+        android:id="@+id/imageButtonSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        android:background="#FF1E90FF"/>
+
 </android.support.constraint.ConstraintLayout>

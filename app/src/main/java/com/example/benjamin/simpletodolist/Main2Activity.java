@@ -30,7 +30,7 @@ import java.util.Locale;
 public class Main2Activity extends AppCompatActivity {
 
     EditText task;
-    TextView dEt, tEt;
+    TextView dEt, tEt, title;
     DatePickerDialog dPd;
     TimePickerDialog tPd;
     ImageButton clean1, clean2, saveButton, mic;
@@ -70,6 +70,7 @@ public class Main2Activity extends AppCompatActivity {
         mic = findViewById(R.id.imageButtonMic);
         dEt = findViewById(R.id.dateTextView);
         tEt = findViewById(R.id.timeTextView);
+        title = findViewById(R.id.new_task);
 
         clean1 = findViewById(R.id.blueClean1);
         clean2 = findViewById(R.id.blueClean2);
@@ -88,6 +89,7 @@ public class Main2Activity extends AppCompatActivity {
             }
             if(taskFromMain != null){
                 task.setText(taskFromMain);
+                title.setText("Edit Task");
             }
             if(dueDayFromMain != null){
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -118,18 +120,14 @@ public class Main2Activity extends AppCompatActivity {
             hour = c.get(Calendar.HOUR_OF_DAY);
             minute = c.get(Calendar.MINUTE);
 
-            if(minute < 10){
-                mMinute = "0" + minute;
-            } else {
-                mMinute = String.valueOf(minute);
-            }
+
 
             if(c.get(Calendar.AM_PM) == Calendar.AM){
                 apm = "am";
             } else {
                 apm = "pm";
             }
-            tEt.setText(hourToString(hour) + ": " + mMinute + " " + apm);
+            tEt.setText(hourToString(hour) + ": " + minuteToString(minute) + " " + apm);
 
         }
 
@@ -177,12 +175,7 @@ public class Main2Activity extends AppCompatActivity {
                         } else {
                             apm = "pm";
                         }
-                        if(mMinute < 10){
-                            mM = "0" + String.valueOf(mMinute);
-                        } else {
-                            mM = String.valueOf(mMinute);
-                        }
-                        tEt.setText(hourToString(mHour) + ": " + mM + " " + apm);
+                        tEt.setText(hourToString(mHour) + ": " + minuteToString(mMinute) + " " + apm);
                     }
                 }, hour, minute, is24HourView);
                 tPd.show();
@@ -367,5 +360,13 @@ public class Main2Activity extends AppCompatActivity {
             mH = String.valueOf(hour-12);
         }
         return mH;
+    }
+
+    public static String minuteToString(int minute){
+        String mM = String.valueOf(minute);
+        if(minute < 10){
+            mM = "0" + minute;
+        }
+        return mM;
     }
 }
